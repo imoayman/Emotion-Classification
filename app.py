@@ -16,12 +16,14 @@ if uploaded_file is not None:
     img = Image.open(uploaded_file)
     st.image(img, caption="Uploaded Image", use_column_width=True)
 
-    img = img.convert("L").resize((48, 48))
-    img_array = np.array(img) / 255.0
-    img_array = np.expand_dims(img_array, axis=-1)
-    img_array = np.expand_dims(img_array, axis=0)
+    img = img.convert("L").resize((48, 48)) 
+    img_array = np.array(img) / 255.0       
+    img_array = np.expand_dims(img_array, axis=-1) 
+    img_array = np.expand_dims(img_array, axis=0) 
 
     prediction = model.predict(img_array)
     predicted_emotion = emotion_labels[np.argmax(prediction)]
+    confidence = np.max(prediction) * 100  
 
-    st.write(f"Predicted Emotion: **{predicted_emotion}**")
+    st.write(f"Predicted Emotion: **{predicted_emotion}** with {confidence:.2f}% confidence")
+
