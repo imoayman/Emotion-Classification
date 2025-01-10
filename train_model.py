@@ -1,14 +1,16 @@
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout
+from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout, BatchNormalization
 from data_preprocessing import create_data_generator
 
 def build_model():
     model = Sequential([
         Conv2D(32, (3, 3), activation='relu', input_shape=(48, 48, 1)),
+        BatchNormalization(),  
         MaxPooling2D(2, 2),
         Dropout(0.25),
 
         Conv2D(64, (3, 3), activation='relu'),
+        BatchNormalization(), 
         MaxPooling2D(2, 2),
         Dropout(0.25),
 
@@ -20,21 +22,18 @@ def build_model():
     model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
     return model
 
-# Data Generator
 datagen = create_data_generator()
 
-# Assuming 'train_dir' contains categorized folders
 train_generator = datagen.flow_from_directory(
     'train_dir',
-    target_size=(48, 48),
-    color_mode='grayscale',
+    target_size=(48, 48), 
+    color_mode='grayscale', 
     batch_size=32,
-    class_mode='categorical'
+    class_mode='categorical' 
 )
 
-# Train Model
 model = build_model()
 model.fit(train_generator, epochs=25)
 
-# Save Model
 model.save('model.keras')
+
